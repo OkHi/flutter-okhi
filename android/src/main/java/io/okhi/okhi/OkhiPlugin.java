@@ -1,5 +1,7 @@
 package io.okhi.okhi;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import io.flutter.Log;
@@ -17,12 +19,13 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
   private MethodChannel channel;
   private OkHi okHi;
   private final static String TAG = "OkHi";
+  private Context context;
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+    context = flutterPluginBinding.getApplicationContext();
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "okhi");
     channel.setMethodCallHandler(this);
-
   }
 
   @Override
@@ -33,6 +36,14 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
         break;
       case "isLocationServicesEnabled":
         handleIsLocationServicesEnabled(call, result);
+      case "isLocationPermissionGranted":
+        handleIsLocationPermissionGranted(call, result);
+        break;
+      case "isBackgroundLocationPermissionGranted":
+        handleIsBackgroundLocationPermissionGranted(call, result);
+        break;
+      case "isGooglePlayServicesAvailable":
+        handleIsGooglePlayServicesAvailable(call, result);
         break;
       default:
         result.notImplemented();
@@ -75,5 +86,18 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
   }
 
   private void handleIsLocationServicesEnabled(MethodCall call, Result result) {
+    result.success(OkHi.isLocationServicesEnabled(context));
+  }
+
+  private void handleIsLocationPermissionGranted(MethodCall call, Result result) {
+    result.success(OkHi.isLocationPermissionGranted(context));
+  }
+
+  private void handleIsBackgroundLocationPermissionGranted(MethodCall call, Result result) {
+    result.success(OkHi.isBackgroundLocationPermissionGranted(context));
+  }
+
+  private void handleIsGooglePlayServicesAvailable(MethodCall call, Result result) {
+    result.success(OkHi.isGooglePlayServicesAvailable(context));
   }
 }
