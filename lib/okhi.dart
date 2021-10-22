@@ -33,4 +33,28 @@ class OkHi {
         await _channel.invokeMethod("isGooglePlayServicesAvailable");
     return result;
   }
+
+  static Future<bool> requestLocationPermission() async {
+    final bool result =
+        await _channel.invokeMethod("requestLocationPermission");
+    return result;
+  }
+
+  static Future<bool> requestBackgroundLocationPermission() async {
+    final bool result =
+        await _channel.invokeMethod("requestBackgroundLocationPermission");
+    return result;
+  }
+
+  static Future<bool> requestEnableLocationServices() async {
+    final bool result =
+        await _channel.invokeMethod("requestEnableLocationServices");
+    return result;
+  }
+
+  static Future<bool> requestEnableGooglePlayServices() async {
+    final bool result =
+        await _channel.invokeMethod("requestEnableGooglePlayServices");
+    return result;
+  }
 }

@@ -90,6 +90,22 @@ class _MyAppState extends State<MyApp> {
                 title: "Google Play Services Permission Check",
                 onPressed: _handleIsGooglePlayServicesAvailable,
               ),
+              FullButton(
+                title: "Request location permission",
+                onPressed: _handleRequestLocationPermission,
+              ),
+              FullButton(
+                title: "Request background location permission",
+                onPressed: _handleRequestBackgroundLocationPermission,
+              ),
+              FullButton(
+                title: "Request enable location service",
+                onPressed: _handleRequestEnableLocationService,
+              ),
+              FullButton(
+                title: "Request enable Google Play Service",
+                onPressed: _handleEnableGooglePlayService,
+              ),
               MessageBox(message: message)
             ],
           ),
@@ -121,6 +137,34 @@ class _MyAppState extends State<MyApp> {
 
   _handleIsGooglePlayServicesAvailable() async {
     final result = await OkHi.isGooglePlayServicesAvailable();
+    setState(() {
+      message = result.toString();
+    });
+  }
+
+  _handleRequestLocationPermission() async {
+    final result = await OkHi.requestLocationPermission();
+    setState(() {
+      message = result.toString();
+    });
+  }
+
+  _handleRequestBackgroundLocationPermission() async {
+    final result = await OkHi.requestBackgroundLocationPermission();
+    setState(() {
+      message = result.toString();
+    });
+  }
+
+  _handleRequestEnableLocationService() async {
+    final result = await OkHi.requestEnableLocationServices();
+    setState(() {
+      message = result.toString();
+    });
+  }
+
+  _handleEnableGooglePlayService() async {
+    final result = await OkHi.requestEnableGooglePlayServices();
     setState(() {
       message = result.toString();
     });
