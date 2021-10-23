@@ -18,6 +18,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(await Okhi.platformVersion, '42');
+    expect(await OkHi.platformVersion, '42');
   });
 }
