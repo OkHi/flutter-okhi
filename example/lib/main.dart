@@ -75,6 +75,10 @@ class _MyAppState extends State<MyApp> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               FullButton(
+                title: "Platform version",
+                onPressed: _handlePlatformVersion,
+              ),
+              FullButton(
                 title: "Location Services Check",
                 onPressed: _handleIsLocationServicesEnabled,
               ),
@@ -112,6 +116,13 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  _handlePlatformVersion() async {
+    final result = await OkHi.platformVersion;
+    setState(() {
+      message = result;
+    });
   }
 
   _handleIsLocationServicesEnabled() async {
