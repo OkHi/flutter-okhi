@@ -8,7 +8,7 @@ class OkHiAppConfiguration {
 
   OkHiAppConfiguration(
       {required this.branchId, required this.clientKey, required this.env});
-  OkHiAppConfiguration.withEnvValue(
+  OkHiAppConfiguration.withRawValue(
       {required this.branchId,
       required this.clientKey,
       required this.environmentValue});
