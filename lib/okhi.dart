@@ -1,10 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
-export './okcollect/okhi_location_manager.dart';
+import './models/okhi_app_configuration.dart';
 
+// models export
+export './okcollect/okhi_location_manager.dart';
+export './models/okhi_app_configuration.dart';
+export './models/okhi_env.dart';
+export './models/okhi_user.dart';
 class OkHi {
   static const MethodChannel _channel = MethodChannel('okhi');
+  static OkHiAppConfiguration? _configuration;
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -73,5 +79,13 @@ class OkHi {
       // ignore: todo
       throw Exception('Platform not supported');
     }
+  }
+
+  static configure(OkHiAppConfiguration configuration) {
+    _configuration = configuration;
+  }
+
+  static OkHiAppConfiguration? getConfiguration() {
+    return _configuration;
   }
 }
