@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
+export './okcollect/okhi_location_manager.dart';
 
 class OkHi {
   static const MethodChannel _channel = MethodChannel('okhi');
