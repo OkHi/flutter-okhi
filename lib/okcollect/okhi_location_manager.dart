@@ -100,7 +100,7 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
           "container": {"name": "My Awesome App", "version": "1.0.0"},
           "developer": {"name": "external"},
           "library": {"name": "okhiFlutter", "version": "1.0.0"},
-          "platform": {"name": "Flutter"}
+          "platform": {"name": "flutter"}
         },
         "config": {
           "streetView": widget.locationManagerConfiguration.withStreetView,
