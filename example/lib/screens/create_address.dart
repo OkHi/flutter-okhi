@@ -14,7 +14,11 @@ class CreateAddress extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            const Expanded(child: OkHiLocationManager()),
+            Expanded(
+              child: OkHiLocationManager(
+                user: OkHiUser(phone: "+254700110590"),
+              ),
+            ),
             Padding(
               padding: EdgeInsets.all(8.0),
               child: FullButton(
