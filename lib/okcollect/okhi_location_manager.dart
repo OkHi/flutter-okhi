@@ -12,7 +12,6 @@ import '../models/okhi_location_manager_configuration.dart';
 class OkHiLocationManager extends StatefulWidget {
   final OkHiUser user;
   late final OkHiLocationManagerConfiguration locationManagerConfiguration;
-
   OkHiLocationManager(
       {Key? key,
       required this.user,
@@ -28,13 +27,32 @@ class OkHiLocationManager extends StatefulWidget {
 }
 
 class _OkHiLocationManagerState extends State<OkHiLocationManager> {
-  String? _authorizationToken;
   WebViewController? _controller;
+  late String _accessToken;
+  String? _authorizationToken;
+  String _signInUrl = OkHiConstant.sandboxSignInUrl;
+  String _locationManagerUrl = OkHiConstant.sandboxLocationManagerUrl;
 
   @override
   void initState() {
     super.initState();
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    final configuration = OkHi.getConfiguration();
+    if (configuration != null) {
+      if (configuration.environmentRawValue == "dev") {
+        _signInUrl = OkHiConstant.devSignInUrl;
+        _locationManagerUrl = OkHiConstant.devLocationManagerUrl;
+      } else if (configuration.environmentRawValue == "prod") {
+        _signInUrl = OkHiConstant.prodSignInUrl;
+        _locationManagerUrl = OkHiConstant.prodLocationManagerUrl;
+      }
+      final bytes =
+          utf8.encode("${configuration.branchId}:${configuration.clientKey}");
+      _accessToken = 'Token ${base64.encode(bytes)}';
+      _signInUser();
+    } else {
+      //..
+    }
     _signInUser();
   }
 
@@ -46,7 +64,7 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
       );
     }
     return WebView(
-      initialUrl: 'https://dev-manager-v5.okhi.io',
+      initialUrl: _locationManagerUrl,
       javascriptMode: JavascriptMode.unrestricted,
       javascriptChannels: {
         JavascriptChannel(
@@ -107,34 +125,25 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
   }
 
   _signInUser() async {
-    final config = OkHi.getConfiguration();
-    // ignore: todo
-    // TODO: throw unauthoirised error
-    if (config == null) return;
-    var url = OkHiConstant.sandboxSignInUrl;
-    if (config.environmentValue == "prod") {
-      url = OkHiConstant.prodSignInUrl;
-    } else if (config.environmentValue == "dev") {
-      url = OkHiConstant.devSignInUrl;
-    }
-    final bytes = utf8.encode("${config.branchId}:${config.clientKey}");
-    final parsedUrl = Uri.parse(url);
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Token ${base64.encode(bytes)}'
+      'Authorization': _accessToken
     };
     final body = jsonEncode({
       "phone": widget.user.phone,
       "scopes": ["address"]
     });
+    final parsedUrl = Uri.parse(_signInUrl);
     final response = await http.post(
       parsedUrl,
       headers: headers,
       body: body,
     );
     // ignore: todo
-    // TODO: network error handling
+    //TODO: network error handling, response code handling
+    print(_signInUrl);
+    print(response.body.toString());
     if (response.statusCode == 201) {
       final body = jsonDecode(response.body);
       setState(() {
