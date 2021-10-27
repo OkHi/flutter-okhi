@@ -201,8 +201,6 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
     _appIdentifier =
         await _channel.invokeMethod(OkHiNativeMethod.getAppIdentifier);
     _appVersion = await _channel.invokeMethod(OkHiNativeMethod.getAppVersion);
-    print(_appIdentifier);
-    print(_appVersion);
   }
 
   _signInUser() async {
