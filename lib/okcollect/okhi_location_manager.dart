@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +10,7 @@ import '../models/okhi_user.dart';
 import '../models/okhi_constant.dart';
 import '../models/okhi_location_manager_configuration.dart';
 import '../models/okhi_location_manager_response.dart';
+import '../models/okhi_native_methods.dart';
 
 class OkHiLocationManager extends StatefulWidget {
   final OkHiUser user;
@@ -36,36 +38,23 @@ class OkHiLocationManager extends StatefulWidget {
 
 class _OkHiLocationManagerState extends State<OkHiLocationManager> {
   WebViewController? _controller;
-  late String _accessToken;
+  String? _accessToken;
   String? _authorizationToken;
+  String? _appIdentifier;
+  String? _appVersion;
   String _signInUrl = OkHiConstant.sandboxSignInUrl;
   String _locationManagerUrl = OkHiConstant.sandboxLocationManagerUrl;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
-    final configuration = OkHi.getConfiguration();
-    if (configuration != null) {
-      if (configuration.environmentRawValue == "dev") {
-        _signInUrl = OkHiConstant.devSignInUrl;
-        _locationManagerUrl = OkHiConstant.devLocationManagerUrl;
-      } else if (configuration.environmentRawValue == "prod") {
-        _signInUrl = OkHiConstant.prodSignInUrl;
-        _locationManagerUrl = OkHiConstant.prodLocationManagerUrl;
-      }
-      final bytes =
-          utf8.encode("${configuration.branchId}:${configuration.clientKey}");
-      _accessToken = 'Token ${base64.encode(bytes)}';
-      _signInUser();
-    } else {
-      //..TODO: throw unuthorised
-    }
+    _handleInitState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_authorizationToken == null) {
+    if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator.adaptive(),
       );
@@ -95,6 +84,30 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
     return !canGoBack;
   }
 
+  _handleInitState() async {
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    final configuration = OkHi.getConfiguration();
+    if (configuration != null) {
+      if (configuration.environmentRawValue == "dev") {
+        _signInUrl = OkHiConstant.devSignInUrl;
+        _locationManagerUrl = OkHiConstant.devLocationManagerUrl;
+      } else if (configuration.environmentRawValue == "prod") {
+        _signInUrl = OkHiConstant.prodSignInUrl;
+        _locationManagerUrl = OkHiConstant.prodLocationManagerUrl;
+      }
+      final bytes =
+          utf8.encode("${configuration.branchId}:${configuration.clientKey}");
+      _accessToken = 'Token ${base64.encode(bytes)}';
+      await _signInUser();
+      await _getAppInformation();
+      setState(() {
+        _isLoading = false;
+      });
+    } else {
+      //..TODO: throw unuthorised
+    }
+  }
+
   _handleOnWebViewCreated(WebViewController controller) {
     _controller = controller;
   }
@@ -113,9 +126,12 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
         "user": {"phone": widget.user.phone},
         "auth": {"authToken": _authorizationToken},
         "context": {
-          "container": {"name": "My Awesome App", "version": "1.0.0"},
+          "container": {"name": _appIdentifier, "version": _appVersion},
           "developer": {"name": "external"},
-          "library": {"name": "okhiFlutter", "version": "1.0.0"},
+          "library": {
+            "name": "okhiFlutter",
+            "version": OkHiConstant.libraryVersion
+          },
           "platform": {"name": "flutter"}
         },
         "config": {
@@ -180,11 +196,20 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
     }
   }
 
+  _getAppInformation() async {
+    const MethodChannel _channel = MethodChannel('okhi');
+    _appIdentifier =
+        await _channel.invokeMethod(OkHiNativeMethod.getAppIdentifier);
+    _appVersion = await _channel.invokeMethod(OkHiNativeMethod.getAppVersion);
+    print(_appIdentifier);
+    print(_appVersion);
+  }
+
   _signInUser() async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': _accessToken
+      'Authorization': _accessToken ?? ''
     };
     final body = jsonEncode({
       "phone": widget.user.phone,
@@ -200,9 +225,7 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
     //TODO: network error handling, response code handling
     if (response.statusCode == 201) {
       final body = jsonDecode(response.body);
-      setState(() {
-        _authorizationToken = body["authorization_token"];
-      });
+      _authorizationToken = body["authorization_token"];
     }
   }
 }
