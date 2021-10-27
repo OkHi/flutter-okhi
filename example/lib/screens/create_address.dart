@@ -17,10 +17,16 @@ class CreateAddress extends StatelessWidget {
             Expanded(
               child: OkHiLocationManager(
                 user: OkHiUser(phone: "+254700110590"),
+                onSucess: (response) {
+                  print(response.user.id);
+                  print(response.location.id);
+                  print(response.location.lat);
+                  print(response.location.lon);
+                },
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: FullButton(
                 title: "Go back",
                 onPressed: () {
