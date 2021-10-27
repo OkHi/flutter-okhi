@@ -38,6 +38,12 @@ public class SwiftOkhiPlugin: NSObject, FlutterPlugin {
     case "requestBackgroundLocationPermission":
       handleRequestBackgroundLocationPermission(call, result)
       break
+    case "getAppIdentifier":
+      handleGetAppIdentifier(call, result)
+      break
+    case "getAppVersion":
+      handleGetAppVersion(call, result)
+      break
     default:
       result(FlutterMethodNotImplemented)
       break
@@ -80,6 +86,16 @@ public class SwiftOkhiPlugin: NSObject, FlutterPlugin {
     self.flutterResult = result
     locationPermissionRequestType = .always
     okhiLocationService.requestLocationPermission(withBackgroundLocationPermission: true)
+  }
+  
+  private func handleGetAppIdentifier(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
+    let bundleID = Bundle.main.bundleIdentifier
+    result(bundleID ?? "")
+  }
+  
+  private func handleGetAppVersion(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
+    let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+    result(appVersion ?? "")
   }
   
   private func isBackgroundLocationPermissionGranted() -> Bool {
