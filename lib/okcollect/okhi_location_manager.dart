@@ -8,15 +8,23 @@ import '../okhi.dart';
 import '../models/okhi_user.dart';
 import '../models/okhi_constant.dart';
 import '../models/okhi_location_manager_configuration.dart';
+import '../models/okhi_location_manager_response.dart';
 
 class OkHiLocationManager extends StatefulWidget {
   final OkHiUser user;
   late final OkHiLocationManagerConfiguration locationManagerConfiguration;
-  OkHiLocationManager(
-      {Key? key,
-      required this.user,
-      OkHiLocationManagerConfiguration? configuration})
-      : locationManagerConfiguration =
+  final Function(OkHiLocationManagerResponse response)? onSucess;
+  final Function()? onError;
+  final Function()? onCloseRequest;
+
+  OkHiLocationManager({
+    Key? key,
+    required this.user,
+    OkHiLocationManagerConfiguration? configuration,
+    this.onSucess,
+    this.onError,
+    this.onCloseRequest,
+  })  : locationManagerConfiguration =
             configuration ?? OkHiLocationManagerConfiguration(),
         super(key: key);
 
@@ -51,9 +59,8 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
       _accessToken = 'Token ${base64.encode(bytes)}';
       _signInUser();
     } else {
-      //..
+      //..TODO: throw unuthorised
     }
-    _signInUser();
   }
 
   @override
@@ -121,7 +128,45 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
   }
 
   _handleMessageReceived(JavascriptMessage jsMessage) {
-    print(jsMessage.message);
+    final Map<String, dynamic> data = jsonDecode(jsMessage.message);
+    final String message = data["message"];
+    switch (message) {
+      case "location_created":
+      case "location_updated":
+      case "location_selected":
+        _handleMessageSuccess(data["payload"]);
+        break;
+      case "fatal_exit":
+        _handleMessageError(data["payload"]);
+        break;
+      case "exit_app":
+        _handleMessageExit();
+        break;
+      default:
+    }
+  }
+
+  _handleMessageError(String data) {
+    // ignore: todo
+    // TODO: handle error
+    final cb = widget.onError;
+    if (cb != null) {
+      cb();
+    }
+  }
+
+  _handleMessageSuccess(Map<String, dynamic> data) {
+    final cb = widget.onSucess;
+    if (cb != null) {
+      cb(OkHiLocationManagerResponse(data));
+    }
+  }
+
+  _handleMessageExit() {
+    final cb = widget.onCloseRequest;
+    if (cb != null) {
+      cb();
+    }
   }
 
   _signInUser() async {
@@ -142,8 +187,6 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
     );
     // ignore: todo
     //TODO: network error handling, response code handling
-    print(_signInUrl);
-    print(response.body.toString());
     if (response.statusCode == 201) {
       final body = jsonDecode(response.body);
       setState(() {
