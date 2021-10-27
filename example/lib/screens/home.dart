@@ -13,7 +13,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String message = "";
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,9 +138,13 @@ class _HomeState extends State<Home> {
     });
   }
 
-  _handleCreateAnAddress(BuildContext context) {
-    final result = Navigator.push<String>(context,
+  _handleCreateAnAddress(BuildContext context) async {
+    final result = await Navigator.push<OkHiLocationManagerResponse>(context,
         MaterialPageRoute(builder: (context) => const CreateAddress()));
-    result.then((value) => print(value));
+    if (result != null) {
+      setState(() {
+        message = result.toString();
+      });
+    }
   }
 }
