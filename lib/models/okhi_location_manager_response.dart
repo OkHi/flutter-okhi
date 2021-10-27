@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../models/okhi_user.dart';
 import '../models/okhi_location.dart';
 
@@ -13,5 +15,10 @@ class OkHiLocationManagerResponse {
       lastName: data["user"]["lastName"] ?? data["user"]["last_name"],
       id: data["user"]["id"],
     );
+  }
+
+  @override
+  String toString() {
+    return '{"user": ${user.toString()}, "location": ${location.toString()}}';
   }
 }
