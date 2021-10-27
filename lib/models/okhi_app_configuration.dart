@@ -1,4 +1,4 @@
-import 'okhi_env.dart';
+import './okhi_env.dart';
 
 class OkHiAppConfiguration {
   final String branchId;

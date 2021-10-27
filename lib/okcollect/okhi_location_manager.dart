@@ -2,31 +2,12 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:okhi/models/okhi_constant.dart';
-import 'package:okhi/models/okhi_user.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
-
 import '../okhi.dart';
-
-class OkHiLocationManagerConfiguration {
-  late String color;
-  late String logoUrl;
-  late bool withAppBar;
-  late bool withStreetView;
-
-  OkHiLocationManagerConfiguration({
-    String? color,
-    String? logoUrl,
-    bool? withAppBar,
-    bool? withStreetView,
-  }) {
-    this.color = color ?? "#005d67";
-    this.logoUrl = logoUrl ?? OkHiConstant.OKHI_LOGO_URL;
-    this.withAppBar = withAppBar ?? true;
-    this.withStreetView = withStreetView ?? true;
-  }
-}
+import '../models/okhi_user.dart';
+import '../models/okhi_constant.dart';
+import '../models/okhi_location_manager_configuration.dart';
 
 class OkHiLocationManager extends StatefulWidget {
   final OkHiUser user;
@@ -130,11 +111,11 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
     // ignore: todo
     // TODO: throw unauthoirised error
     if (config == null) return;
-    var url = OkHiConstant.SANDBOX_SIGN_IN_URL;
+    var url = OkHiConstant.sandboxSignInUrl;
     if (config.environmentValue == "prod") {
-      url = OkHiConstant.PROD_SIGN_IN_URL;
+      url = OkHiConstant.prodSignInUrl;
     } else if (config.environmentValue == "dev") {
-      url = OkHiConstant.DEV_SIGN_IN_URL;
+      url = OkHiConstant.devSignInUrl;
     }
     final bytes = utf8.encode("${config.branchId}:${config.clientKey}");
     final parsedUrl = Uri.parse(url);
