@@ -16,4 +16,5 @@ class OkHiNativeMethod {
       "requestEnableGooglePlayServices";
   static const String getAppIdentifier = "getAppIdentifier";
   static const String getAppVersion = "getAppVersion";
+  static const String initialize = "initialize";
 }
