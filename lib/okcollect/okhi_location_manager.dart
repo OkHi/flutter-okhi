@@ -22,8 +22,7 @@ class OkHiLocationManagerConfiguration {
     bool? withStreetView,
   }) {
     this.color = color ?? "#005d67";
-    this.logoUrl = logoUrl ??
-        "https://storage.googleapis.com/okhi-cdn/images/logos/okhi-logo-white.png";
+    this.logoUrl = logoUrl ?? OkHiConstant.OKHI_LOGO_URL;
     this.withAppBar = withAppBar ?? true;
     this.withStreetView = withStreetView ?? true;
   }
