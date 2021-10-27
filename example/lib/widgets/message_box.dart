@@ -16,7 +16,7 @@ class MessageBox extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(8),
-        child: Text(message),
+        child: SingleChildScrollView(child: SelectableText(message)),
       ),
     );
   }
