@@ -79,6 +79,12 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
       case "requestEnableGooglePlayServices":
         handleRequestEnableGooglePlayServices(call, result);
         break;
+      case "getAppIdentifier":
+        handleGetAppIdentifier(call, result);
+        break;
+      case "getAppVersion":
+        handleGetAppVersion(call, result);
+        break;
       default:
         result.notImplemented();
     }
@@ -133,6 +139,20 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
 
   private void handleIsGooglePlayServicesAvailable(MethodCall call, Result result) {
     result.success(OkHi.isGooglePlayServicesAvailable(context));
+  }
+
+  private void handleGetAppIdentifier(MethodCall call, Result result) {
+    result.success(context.getPackageName());
+  }
+
+  private void handleGetAppVersion(MethodCall call, Result result) {
+    try {
+      String versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+      result.success(versionName);
+    } catch (Exception e) {
+      e.printStackTrace();
+      result.success("-1");
+    }
   }
 
   private void handleRequestLocationPermission(MethodCall call, final Result result) {
