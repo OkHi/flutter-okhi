@@ -9,6 +9,8 @@ export './okcollect/okhi_location_manager.dart';
 export './models/okhi_app_configuration.dart';
 export './models/okhi_env.dart';
 export './models/okhi_user.dart';
+export './models/okhi_location_manager_response.dart';
+export './models/okhi_location_manager_configuration.dart';
 
 class OkHi {
   static const MethodChannel _channel = MethodChannel('okhi');
