@@ -18,10 +18,7 @@ class CreateAddress extends StatelessWidget {
               child: OkHiLocationManager(
                 user: OkHiUser(phone: "+254700110590"),
                 onSucess: (response) {
-                  print(response.user.id);
-                  print(response.location.id);
-                  print(response.location.lat);
-                  print(response.location.lon);
+                  _handleLocationManagerResponse(context, response);
                 },
               ),
             ),
@@ -41,6 +38,11 @@ class CreateAddress extends StatelessWidget {
   }
 
   _handleOnButtonPress(BuildContext context) {
-    Navigator.pop(context, 'Woah');
+    Navigator.pop(context);
+  }
+
+  _handleLocationManagerResponse(
+      BuildContext context, OkHiLocationManagerResponse response) {
+    Navigator.pop(context, response);
   }
 }
