@@ -86,8 +86,14 @@ class OkHi {
     }
   }
 
-  static configure(OkHiAppConfiguration configuration) {
+  static Future<bool> initialize(OkHiAppConfiguration configuration) async {
     _configuration = configuration;
+    final credentials = {
+      "branchId": configuration.branchId,
+      "clientKey": configuration.clientKey,
+      "environment": configuration.environmentRawValue,
+    };
+    return await _channel.invokeMethod(OkHiNativeMethod.initialize, credentials);
   }
 
   static OkHiAppConfiguration? getConfiguration() {
