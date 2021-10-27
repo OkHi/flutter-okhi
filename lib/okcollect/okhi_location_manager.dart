@@ -70,18 +70,29 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
         child: CircularProgressIndicator.adaptive(),
       );
     }
-    return WebView(
-      initialUrl: _locationManagerUrl,
-      javascriptMode: JavascriptMode.unrestricted,
-      javascriptChannels: {
-        JavascriptChannel(
-          name: 'FlutterOkHi',
-          onMessageReceived: _handleMessageReceived,
-        )
-      },
-      onWebViewCreated: _handleOnWebViewCreated,
-      onPageFinished: _handlePageLoaded,
+    return WillPopScope(
+      onWillPop: _handleWillPopScope,
+      child: WebView(
+        initialUrl: _locationManagerUrl,
+        javascriptMode: JavascriptMode.unrestricted,
+        javascriptChannels: {
+          JavascriptChannel(
+            name: 'FlutterOkHi',
+            onMessageReceived: _handleMessageReceived,
+          )
+        },
+        onWebViewCreated: _handleOnWebViewCreated,
+        onPageFinished: _handlePageLoaded,
+      ),
     );
+  }
+
+  Future<bool> _handleWillPopScope() async {
+    bool canGoBack = await _controller?.canGoBack() ?? false;
+    if (canGoBack) {
+      await _controller?.goBack();
+    }
+    return !canGoBack;
   }
 
   _handleOnWebViewCreated(WebViewController controller) {
