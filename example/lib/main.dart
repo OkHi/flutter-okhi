@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:okhi/okhi.dart';
 import 'package:okhi_example/screens/home.dart';
 
 void main() {
+  final config = OkHiAppConfiguration.withRawValue(
+    branchId: "",
+    clientKey: "",
+    environmentRawValue: ""
+  );
+  OkHi.configure(config);
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
