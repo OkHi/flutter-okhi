@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class OkHiLocation {
   String? id;
   double? lat;
@@ -61,11 +63,38 @@ class OkHiLocation {
     propertyNumber = data["property_number"];
     state = data["state"];
     streetName = data["street_name"];
-    streetViewPanoId = data["street_view_pano_id"];
-    streetViewPanoUrl = data["street_view_pano_url"];
+    streetViewPanoId = data["street_view"]["pano_id"];
+    streetViewPanoUrl = data["street_view"]["url"];
     subtitle = data["subtitle"];
     title = data["title"];
     url = data["url"];
     userId = data["user_id"];
+  }
+
+  @override
+  String toString() {
+    return jsonEncode({
+      "id": id,
+      "lat": lat,
+      "lon": lon,
+      "city": city,
+      "country": country,
+      "directions": directions,
+      "displayTitle": displayTitle,
+      "otherInformation": otherInformation,
+      "photoUrl": photoUrl,
+      "placeId": placeId,
+      "plusCode": plusCode,
+      "propertyName": propertyName,
+      "propertyNumber": propertyNumber,
+      "state": state,
+      "streetName": streetName,
+      "streetViewPanoId": streetViewPanoId,
+      "streetViewPanoUrl": streetViewPanoUrl,
+      "subtitle": subtitle,
+      "title": title,
+      "url": url,
+      "userId": userId,
+    });
   }
 }
