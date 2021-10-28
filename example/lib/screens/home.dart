@@ -13,6 +13,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String message = "";
+  OkHiUser? user;
+  OkHiLocation? location;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +69,13 @@ class _HomeState extends State<Home> {
               onPressed: () {
                 _handleCreateAnAddress(context);
               },
+            ),
+            FullButton(
+              title: "Verify address",
+              onPressed: () {
+                _handleVerifyAddress();
+              },
+              disabled: _handleVerificationButtonDisabled(),
             ),
             MessageBox(message: message)
           ],
@@ -143,8 +152,22 @@ class _HomeState extends State<Home> {
         MaterialPageRoute(builder: (context) => const CreateAddress()));
     if (result != null) {
       setState(() {
-        message = result.toString();
+        user = result.user;
+        location = result.location;
       });
+    }
+  }
+
+  _handleVerificationButtonDisabled() {
+    if (user == null || location == null) {
+      return true;
+    }
+    return false;
+  }
+
+  _handleVerifyAddress() {
+    if (user != null && location != null) {
+      OkHi.startVerification(user!, location!, null);
     }
   }
 }
