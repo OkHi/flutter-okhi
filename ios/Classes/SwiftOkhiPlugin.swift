@@ -137,7 +137,7 @@ public class SwiftOkhiPlugin: NSObject, FlutterPlugin {
       }
       result(true)
     } else {
-      result(false)
+      result(FlutterError(code: "unauthorized", message: "invalid initialization credentials provided", details: nil))
     }
   }
   
