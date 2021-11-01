@@ -176,23 +176,20 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
   _handleMessageError(String data) {
     // ignore: todo
     // TODO: handle error
-    final cb = widget.onError;
-    if (cb != null) {
-      cb();
+    if (widget.onError != null) {
+      widget.onError!();
     }
   }
 
   _handleMessageSuccess(Map<String, dynamic> data) {
-    final cb = widget.onSucess;
-    if (cb != null) {
-      cb(OkHiLocationManagerResponse(data));
+    if (widget.onSucess != null) {
+      widget.onSucess!(OkHiLocationManagerResponse(data));
     }
   }
 
   _handleMessageExit() {
-    final cb = widget.onCloseRequest;
-    if (cb != null) {
-      cb();
+    if (widget.onCloseRequest != null) {
+      widget.onCloseRequest!();
     }
   }
 
