@@ -11,12 +11,14 @@ import '../models/okhi_constant.dart';
 import '../models/okhi_location_manager_configuration.dart';
 import '../models/okhi_location_manager_response.dart';
 import '../models/okhi_native_methods.dart';
+import '../models/okhi_exception.dart';
 
+/// The OkHiLocationManager enables you to launch OkHi from your app and collect accurate addresses from your users.
 class OkHiLocationManager extends StatefulWidget {
   final OkHiUser user;
   late final OkHiLocationManagerConfiguration locationManagerConfiguration;
   final Function(OkHiLocationManagerResponse response)? onSucess;
-  final Function()? onError;
+  final Function(OkHiException exception)? onError;
   final Function()? onCloseRequest;
 
   OkHiLocationManager({
@@ -103,8 +105,13 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
       setState(() {
         _isLoading = false;
       });
-    } else {
-      //..TODO: throw unuthorised
+    } else if (widget.onError != null) {
+      widget.onError!(
+        OkHiException(
+          code: OkHiException.unauthorizedCode,
+          message: OkHiException.unauthorizedMessage,
+        ),
+      );
     }
   }
 
@@ -174,10 +181,13 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
   }
 
   _handleMessageError(String data) {
-    // ignore: todo
-    // TODO: handle error
     if (widget.onError != null) {
-      widget.onError!();
+      widget.onError!(
+        OkHiException(
+          code: OkHiException.unknownErrorCode,
+          message: data,
+        ),
+      );
     }
   }
 
@@ -216,11 +226,35 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
       headers: headers,
       body: body,
     );
-    // ignore: todo
-    //TODO: network error handling, response code handling
     if (response.statusCode == 201) {
       final body = jsonDecode(response.body);
       _authorizationToken = body["authorization_token"];
+    } else if (widget.onError != null) {
+      switch (response.statusCode) {
+        case 400:
+          widget.onError!(
+            OkHiException(
+              code: OkHiException.invalidPhoneCode,
+              message: OkHiException.invalidPhoneMessage,
+            ),
+          );
+          break;
+        case 401:
+          widget.onError!(
+            OkHiException(
+              code: OkHiException.unauthorizedCode,
+              message: OkHiException.unauthorizedMessage,
+            ),
+          );
+          break;
+        default:
+          widget.onError!(
+            OkHiException(
+              code: OkHiException.unknownErrorCode,
+              message: OkHiException.uknownErrorMessage,
+            ),
+          );
+      }
     }
   }
 }
