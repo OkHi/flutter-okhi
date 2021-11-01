@@ -48,27 +48,27 @@ class OkHiLocation {
   });
 
   OkHiLocation.fromMap(Map<String, dynamic> data) {
-    id = data["id"];
-    lat = data["geo_point"] != null ? data["geo_point"]["lat"] : null;
-    lon = data["geo_point"] != null ? data["geo_point"]["lon"] : null;
-    city = data["city"];
-    country = data["country"];
-    directions = data["directions"];
-    displayTitle = data["display_title"];
-    otherInformation = data["other_information"];
-    photoUrl = data["photo"];
-    placeId = data["place_id"];
-    plusCode = data["plus_code"];
-    propertyName = data["property_name"];
-    propertyNumber = data["property_number"];
-    state = data["state"];
-    streetName = data["street_name"];
-    streetViewPanoId = data["street_view"]["pano_id"];
-    streetViewPanoUrl = data["street_view"]["url"];
-    subtitle = data["subtitle"];
-    title = data["title"];
-    url = data["url"];
-    userId = data["user_id"];
+    id = data.containsKey("id") ? data["id"] : null;
+    lat = data.containsKey("geo_point") ? data["geo_point"]["lat"] : null;
+    lon = data.containsKey("geo_point") ? data["geo_point"]["lon"] : null;
+    city = data.containsKey("city") ? data["geo_point"]["lon"] : null;
+    country = data.containsKey("country") ? data["country"] : null;
+    directions = data.containsKey("directions") ? data["directions"] : null;
+    displayTitle = data.containsKey("display_title") ? data["display_title"] : null;
+    otherInformation = data.containsKey("other_information") ? data["other_information"] : null;
+    photoUrl = data.containsKey("photo") ? data["photo"] : null;
+    placeId = data.containsKey("place_id") ? data["place_id"] : null;
+    plusCode = data.containsKey("plus_code") ? data["plus_code"] : null;
+    propertyName = data.containsKey("property_name") ? data["property_name"] : null;
+    propertyNumber = data.containsKey("property_number") ? data["property_number"] : null;
+    state = data.containsKey("state") ? data["state"] : null;
+    streetName = data.containsKey("street_name") ? data["street_name"] : null;
+    streetViewPanoId = data.containsKey("street_view") ? data["street_view"]["pano_id"] : null;
+    streetViewPanoUrl = data.containsKey("street_view") ? data["street_view"]["url"] : null;
+    subtitle = data.containsKey("subtitle") ? data["subtitle"] : null;
+    title = data.containsKey("title") ? data["title"] : null;
+    url = data.containsKey("url") ? data["url"] : null;
+    userId = data.containsKey("user_id") ? data["user_id"] : null;
   }
 
   @override
