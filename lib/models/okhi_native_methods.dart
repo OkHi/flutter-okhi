@@ -18,4 +18,8 @@ class OkHiNativeMethod {
   static const String getAppVersion = "getAppVersion";
   static const String initialize = "initialize";
   static const String startVerification = "startVerification";
+  static const String stopVerification = "stopVerification";
+  static const String isForegroundServiceRunning = "isForegroundServiceRunning";
+  static const String startForegroundService = "startForegroundService";
+  static const String stopForegroundService = "stopForegroundService";
 }
