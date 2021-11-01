@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+/// Defines the structure of the OkHi location object once an address has been successfully created by the user.
 class OkHiLocation {
   String? id;
   double? lat;
