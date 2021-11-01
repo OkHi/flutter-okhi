@@ -108,6 +108,18 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
       case "startVerification":
         handleStartVerification(call, result);
         break;
+      case "stopVerification":
+        handleStopVerification(call, result);
+        break;
+      case "isForegroundServiceRunning":
+        handleIsForegroundServiceRunning(call, result);
+        break;
+      case "startForegroundService":
+        handleStartForegroundService(call, result);
+        break;
+      case "stopForegroundService":
+        handleStopForegroundService(call, result);
+        break;
       default:
         result.notImplemented();
     }
@@ -286,5 +298,41 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
         result.error(e.getCode(), e.getMessage(), null);
       }
     });
+  }
+
+  private void handleStopVerification(MethodCall call, Result result) {
+    if (okVerify == null) {
+      result.error("unauthorized", "invalid initialization credentials provided", null);
+      return;
+    }
+    String locationId = call.argument("phoneNumber");
+    OkVerify.stop(context, locationId, new OkVerifyCallback<String>() {
+      @Override
+      public void onSuccess(String verificationResult) {
+        result.success(verificationResult);
+      }
+      @Override
+      public void onError(OkHiException e) {
+        result.error(e.getCode(), e.getMessage(), null);
+      }
+    });
+  }
+
+  private void handleIsForegroundServiceRunning(MethodCall call, Result result) {
+    result.success(OkVerify.isForegroundServiceRunning(context));
+  }
+
+  private void handleStartForegroundService(MethodCall call, Result result) {
+    try {
+      OkVerify.startForegroundService(context);
+      result.success(true);
+    } catch (OkHiException e) {
+      result.error(e.getCode(), e.getMessage(), null);
+    }
+  }
+
+  private void handleStopForegroundService(MethodCall call, Result result) {
+    OkVerify.stopForegroundService(context);
+    result.success(true);
   }
 }
