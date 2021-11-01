@@ -1,9 +1,15 @@
 package io.okhi.okhi;
 
+import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -16,7 +22,14 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.okhi.android_core.OkHi;
 import io.okhi.android_core.interfaces.OkHiRequestHandler;
+import io.okhi.android_core.models.OkHiAppContext;
+import io.okhi.android_core.models.OkHiAuth;
 import io.okhi.android_core.models.OkHiException;
+import io.okhi.android_core.models.OkHiLocation;
+import io.okhi.android_core.models.OkHiUser;
+import io.okhi.android_okverify.OkVerify;
+import io.okhi.android_okverify.interfaces.OkVerifyCallback;
+import io.okhi.android_okverify.models.OkHiNotification;
 
 /** OkhiPlugin */
 public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -24,6 +37,10 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
   private OkHi okHi;
   private Context context;
   private final static String TAG = "OkHi";
+  private OkVerify okVerify;
+  private OkHiAuth auth;
+  private Activity activity;
+
   private final PluginRegistry.ActivityResultListener activityResultListener = new PluginRegistry.ActivityResultListener() {
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -85,6 +102,24 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
       case "getAppVersion":
         handleGetAppVersion(call, result);
         break;
+      case "initialize":
+        handleInitialize(call, result);
+        break;
+      case "startVerification":
+        handleStartVerification(call, result);
+        break;
+      case "stopVerification":
+        handleStopVerification(call, result);
+        break;
+      case "isForegroundServiceRunning":
+        handleIsForegroundServiceRunning(call, result);
+        break;
+      case "startForegroundService":
+        handleStartForegroundService(call, result);
+        break;
+      case "stopForegroundService":
+        handleStopForegroundService(call, result);
+        break;
       default:
         result.notImplemented();
     }
@@ -99,6 +134,7 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
   public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
     try {
       okHi = new OkHi(binding.getActivity());
+      activity = binding.getActivity();
       binding.addActivityResultListener(activityResultListener);
       binding.addRequestPermissionsResultListener(requestPermissionsResultListener);
     } catch (Exception e) {
@@ -205,5 +241,98 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
         result.error(exception.getCode(), exception.getMessage(), exception.getStackTrace());
       }
     });
+  }
+
+  private void handleInitialize(MethodCall call, Result result) {
+    try {
+      String branchId = call.argument("branchId");
+      String clientKey = call.argument("clientKey");
+      String mode = call.argument("environment");
+      String developer = call.argument("developer");
+      if (branchId == null || clientKey == null || mode == null) {
+        result.error("unauthorized", "invalid initialization credentials provided", null);
+      } else if (activity == null) {
+        result.error("unknown_error", "unable to obtain activity", null);
+      } else {
+        OkHiAppContext appContext = new OkHiAppContext(context, mode, "flutter", developer == null ? "external" : developer);
+        auth = new OkHiAuth(context, branchId, clientKey, appContext);
+        okVerify = new OkVerify.Builder(activity, auth).build();
+        Map<String, Object> notification = call.<HashMap<String, Object>>argument("notification");
+        int importance = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ? NotificationManager.IMPORTANCE_DEFAULT : 3;
+        String title = notification != null && notification.containsKey("title") ? (String) notification.get("title") : "Verification in progress";
+        String text = notification != null && notification.containsKey("text") ? (String) notification.get("text") : "Your address is being verified";
+        String channelId = notification != null && notification.containsKey("channelId") ? (String) notification.get("channelId") : "okhi";
+        String channelName = notification != null && notification.containsKey("channelName") ? (String) notification.get("channelName") : "OkHi";
+        String channelDescription = notification != null && notification.containsKey("channelDescription") ? (String) notification.get("channelDescription") : "Address verification alerts";
+        OkVerify.init(context, new OkHiNotification(title, text, channelId, channelName, channelDescription, importance));
+        result.success(true);
+      }
+    } catch (Exception e) {
+      result.error("unknown_error", "initialization failed", e);
+    }
+  }
+
+  private void handleStartVerification(MethodCall call, Result result) {
+    if (okVerify == null) {
+      result.error("unauthorized", "invalid initialization credentials provided", null);
+      return;
+    }
+    String phone = call.argument("phoneNumber");
+    String locationId = call.argument("locationId");
+    Double lat = call.argument("lat");
+    Double lon = call.argument("lon");
+    Boolean withForegroundService = call.argument("withForegroundService");
+    if (phone == null || locationId == null || lat == null || lon == null) {
+      result.error("bad_request", "invalid values provided for address verification", null);
+      return;
+    }
+    OkHiUser user = new OkHiUser.Builder(phone).build();
+    OkHiLocation location = new OkHiLocation.Builder(locationId, lat, lon).build();
+    okVerify.start(user, location, withForegroundService == null || withForegroundService, new OkVerifyCallback<String>() {
+      @Override
+      public void onSuccess(String verificationResult) {
+        result.success(verificationResult);
+      }
+      @Override
+      public void onError(OkHiException e) {
+        result.error(e.getCode(), e.getMessage(), null);
+      }
+    });
+  }
+
+  private void handleStopVerification(MethodCall call, Result result) {
+    if (okVerify == null) {
+      result.error("unauthorized", "invalid initialization credentials provided", null);
+      return;
+    }
+    String locationId = call.argument("phoneNumber");
+    OkVerify.stop(context, locationId, new OkVerifyCallback<String>() {
+      @Override
+      public void onSuccess(String verificationResult) {
+        result.success(verificationResult);
+      }
+      @Override
+      public void onError(OkHiException e) {
+        result.error(e.getCode(), e.getMessage(), null);
+      }
+    });
+  }
+
+  private void handleIsForegroundServiceRunning(MethodCall call, Result result) {
+    result.success(OkVerify.isForegroundServiceRunning(context));
+  }
+
+  private void handleStartForegroundService(MethodCall call, Result result) {
+    try {
+      OkVerify.startForegroundService(context);
+      result.success(true);
+    } catch (OkHiException e) {
+      result.error(e.getCode(), e.getMessage(), null);
+    }
+  }
+
+  private void handleStopForegroundService(MethodCall call, Result result) {
+    OkVerify.stopForegroundService(context);
+    result.success(true);
   }
 }

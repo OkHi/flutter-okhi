@@ -13,6 +13,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String message = "";
+  OkHiUser? user;
+  OkHiLocation? location;
 
   @override
   Widget build(BuildContext context) {
@@ -20,56 +22,82 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: const Text("OkHi"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            FullButton(
-              title: "Platform version",
-              onPressed: _handlePlatformVersion,
-            ),
-            FullButton(
-              title: "Location Services Check",
-              onPressed: _handleIsLocationServicesEnabled,
-            ),
-            FullButton(
-              title: "Location Permission Check",
-              onPressed: _handleIsLocationPermissionGranted,
-            ),
-            FullButton(
-              title: "Background Location Permission Check",
-              onPressed: _handleIsBackgroundLocationPermissionGranted,
-            ),
-            FullButton(
-              title: "Google Play Services Permission Check",
-              onPressed: _handleIsGooglePlayServicesAvailable,
-            ),
-            FullButton(
-              title: "Request location permission",
-              onPressed: _handleRequestLocationPermission,
-            ),
-            FullButton(
-              title: "Request background location permission",
-              onPressed: _handleRequestBackgroundLocationPermission,
-            ),
-            FullButton(
-              title: "Request enable location service",
-              onPressed: _handleRequestEnableLocationService,
-            ),
-            FullButton(
-              title: "Request enable Google Play Service",
-              onPressed: _handleEnableGooglePlayService,
-            ),
-            FullButton(
-              title: "Create an address",
-              onPressed: () {
-                _handleCreateAnAddress(context);
-              },
-            ),
-            MessageBox(message: message)
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              FullButton(
+                title: "Platform version",
+                onPressed: _handlePlatformVersion,
+              ),
+              FullButton(
+                title: "Location Services Check",
+                onPressed: _handleIsLocationServicesEnabled,
+              ),
+              FullButton(
+                title: "Location Permission Check",
+                onPressed: _handleIsLocationPermissionGranted,
+              ),
+              FullButton(
+                title: "Background Location Permission Check",
+                onPressed: _handleIsBackgroundLocationPermissionGranted,
+              ),
+              FullButton(
+                title: "Google Play Services Permission Check",
+                onPressed: _handleIsGooglePlayServicesAvailable,
+              ),
+              FullButton(
+                title: "Request location permission",
+                onPressed: _handleRequestLocationPermission,
+              ),
+              FullButton(
+                title: "Request background location permission",
+                onPressed: _handleRequestBackgroundLocationPermission,
+              ),
+              FullButton(
+                title: "Request enable location service",
+                onPressed: _handleRequestEnableLocationService,
+              ),
+              FullButton(
+                title: "Request enable Google Play Service",
+                onPressed: _handleEnableGooglePlayService,
+              ),
+              FullButton(
+                title: "Create an address",
+                onPressed: () {
+                  _handleCreateAnAddress(context);
+                },
+              ),
+              FullButton(
+                title: "Verify address",
+                onPressed: () {
+                  _handleVerifyAddress();
+                },
+                disabled: _handleVerificationButtonDisabled(),
+              ),
+              FullButton(
+                title: "Stop address verification",
+                onPressed: _handleStopVerification,
+                disabled: _handleVerificationButtonDisabled(),
+              ),
+              FullButton(
+                title: "Start foreground service",
+                onPressed: _handleStartForegroundService,
+              ),
+              FullButton(
+                title: "Stop foreground service",
+                onPressed: _handleStopForegroundService,
+              ),
+              FullButton(
+                title: "Is service running",
+                onPressed: _handleCheckForegroundService,
+              ),
+              MessageBox(message: message)
+            ],
+          ),
         ),
       ),
     );
@@ -143,8 +171,55 @@ class _HomeState extends State<Home> {
         MaterialPageRoute(builder: (context) => const CreateAddress()));
     if (result != null) {
       setState(() {
-        message = result.toString();
+        user = result.user;
+        location = result.location;
       });
     }
+  }
+
+  _handleVerificationButtonDisabled() {
+    if (user == null || location == null) {
+      return true;
+    }
+    return false;
+  }
+
+  _handleVerifyAddress() async {
+    if (user != null && location != null) {
+      final result = await OkHi.startVerification(user!, location!, null);
+      setState(() {
+        message = "Started verification for $result";
+      });
+    }
+  }
+
+  _handleStopVerification() async {
+    if (user != null && location != null) {
+      final result = await OkHi.stopVerification(user!, location!);
+      setState(() {
+        message = "Stopped verification for $result";
+      });
+    }
+  }
+
+  _handleStartForegroundService() async {
+    final result = await OkHi.startForegroundService();
+    setState(() {
+      message = "Foreground service start: $result";
+    });
+  }
+
+  _handleStopForegroundService() async {
+    final result = await OkHi.stopForegroundService();
+    setState(() {
+      message = "Foreground service stop: $result";
+    });
+  }
+
+  _handleCheckForegroundService() async {
+    final result = await OkHi.isForegroundServiceRunning();
+    setState(() {
+      message = "Foreground service is running: $result";
+    });
   }
 }

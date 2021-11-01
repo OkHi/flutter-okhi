@@ -1,7 +1,4 @@
-import 'dart:convert';
-
-import '../models/okhi_user.dart';
-import '../models/okhi_location.dart';
+import '../okhi.dart';
 
 class OkHiLocationManagerResponse {
   late OkHiUser user;
@@ -9,16 +6,16 @@ class OkHiLocationManagerResponse {
 
   OkHiLocationManagerResponse(Map<String, dynamic> data) {
     location = OkHiLocation.fromMap(data["location"]);
-    user = OkHiUser(
-      phone: data["user"]["phone"],
-      firstName: data["user"]["firstName"] ?? data["user"]["first_name"],
-      lastName: data["user"]["lastName"] ?? data["user"]["last_name"],
-      id: data["user"]["id"],
-    );
+    user = OkHiUser.fromMap(phone: data["user"]["phone"], data: data);
   }
 
   @override
   String toString() {
     return '{"user": ${user.toString()}, "location": ${location.toString()}}';
+  }
+
+  Future<String> startVerification(
+      OkHiVerificationConfiguration? configuration) {
+    return OkHi.startVerification(user, location, configuration);
   }
 }

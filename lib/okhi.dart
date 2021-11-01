@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:okhi/models/okhi_location.dart';
+import 'package:okhi/models/okhi_user.dart';
 import './models/okhi_app_configuration.dart';
 import './models/okhi_native_methods.dart';
+import './models/okhi_verification_configuration.dart';
 
 // models export
 export './okcollect/okhi_location_manager.dart';
@@ -11,6 +14,9 @@ export './models/okhi_env.dart';
 export './models/okhi_user.dart';
 export './models/okhi_location_manager_response.dart';
 export './models/okhi_location_manager_configuration.dart';
+export './models/okhi_notification.dart';
+export './models/okhi_verification_configuration.dart';
+export './models/okhi_location.dart';
 
 class OkHi {
   static const MethodChannel _channel = MethodChannel('okhi');
@@ -86,11 +92,64 @@ class OkHi {
     }
   }
 
-  static configure(OkHiAppConfiguration configuration) {
+  static Future<bool> initialize(OkHiAppConfiguration configuration) async {
     _configuration = configuration;
+    final credentials = {
+      "branchId": configuration.branchId,
+      "clientKey": configuration.clientKey,
+      "environment": configuration.environmentRawValue,
+      "notification": configuration.notification.toMap()
+    };
+    return await _channel.invokeMethod(
+        OkHiNativeMethod.initialize, credentials);
   }
 
   static OkHiAppConfiguration? getConfiguration() {
     return _configuration;
+  }
+
+  static Future<String> startVerification(OkHiUser user, OkHiLocation location,
+      OkHiVerificationConfiguration? configuration) async {
+    if (location.id == null || location.lat == null || location.lon == null) {
+      // ignore: todo
+      // TODO: error handling
+      throw Exception("missing values");
+    } else {
+      final config = configuration ?? OkHiVerificationConfiguration();
+      return await _channel.invokeMethod(OkHiNativeMethod.startVerification, {
+        "phoneNumber": user.phone,
+        "locationId": location.id,
+        "lat": location.lat,
+        "lon": location.lon,
+        "withForegroundService": config.withForegroundService,
+      });
+    }
+  }
+
+  static Future<String> stopVerification(
+      OkHiUser user, OkHiLocation location) async {
+    if (location.id == null) {
+      // ignore: todo
+      // TODO: error handling
+      throw Exception("missing values");
+    } else {
+      return await _channel.invokeMethod(OkHiNativeMethod.stopVerification, {
+        "phoneNumber": user.phone,
+        "locationId": location.id,
+      });
+    }
+  }
+
+  static Future<bool> isForegroundServiceRunning() async {
+    return await _channel
+        .invokeMethod(OkHiNativeMethod.isForegroundServiceRunning);
+  }
+
+  static Future<bool> startForegroundService() async {
+    return await _channel.invokeMethod(OkHiNativeMethod.startForegroundService);
+  }
+
+  static Future<bool> stopForegroundService() async {
+    return await _channel.invokeMethod(OkHiNativeMethod.stopForegroundService);
   }
 }
