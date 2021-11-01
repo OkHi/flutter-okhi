@@ -125,4 +125,31 @@ class OkHi {
       });
     }
   }
+
+  static Future<String> stopVerification(
+      OkHiUser user, OkHiLocation location) async {
+    if (location.id == null) {
+      // ignore: todo
+      // TODO: error handling
+      throw Exception("missing values");
+    } else {
+      return await _channel.invokeMethod(OkHiNativeMethod.stopVerification, {
+        "phoneNumber": user.phone,
+        "locationId": location.id,
+      });
+    }
+  }
+
+  static Future<bool> isForegroundServiceRunning() async {
+    return await _channel
+        .invokeMethod(OkHiNativeMethod.isForegroundServiceRunning);
+  }
+
+  static Future<bool> startForegroundService() async {
+    return await _channel.invokeMethod(OkHiNativeMethod.startForegroundService);
+  }
+
+  static Future<bool> stopForegroundService() async {
+    return await _channel.invokeMethod(OkHiNativeMethod.stopForegroundService);
+  }
 }
