@@ -164,11 +164,12 @@ public class SwiftOkhiPlugin: NSObject, FlutterPlugin {
     let phoneNumber = arguments["phoneNumber"] as? String
     let locationId = arguments["locationId"] as? String
     if let locationId = locationId, let phoneNumber = phoneNumber {
-      self.flutterResult = result
       let user = OkHiUser(phoneNumber: phoneNumber)
       let okVerify = OkHiVerify(user: user)
-      okVerify.delegate = self
       okVerify.stop(locationId: locationId)
+      result(locationId)
+    } else {
+      result(FlutterError(code: "bad_request", message: "invalid arguments provided for stopping verification", details: nil))
     }
   }
   
