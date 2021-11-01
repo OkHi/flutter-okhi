@@ -6,12 +6,7 @@ class OkHiLocationManagerResponse {
 
   OkHiLocationManagerResponse(Map<String, dynamic> data) {
     location = OkHiLocation.fromMap(data["location"]);
-    user = OkHiUser(
-      phone: data["user"]["phone"],
-      firstName: data["user"]["firstName"] ?? data["user"]["first_name"],
-      lastName: data["user"]["lastName"] ?? data["user"]["last_name"],
-      id: data["user"]["id"],
-    );
+    user = OkHiUser.fromMap(phone: data["user"]["phone"], data: data);
   }
 
   @override
@@ -19,7 +14,8 @@ class OkHiLocationManagerResponse {
     return '{"user": ${user.toString()}, "location": ${location.toString()}}';
   }
 
-  Future<String> startVerification(OkHiVerificationConfiguration? configuration) {
+  Future<String> startVerification(
+      OkHiVerificationConfiguration? configuration) {
     return OkHi.startVerification(user, location, configuration);
   }
 }
