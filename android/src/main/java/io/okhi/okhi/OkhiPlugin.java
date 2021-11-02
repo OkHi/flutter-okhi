@@ -192,7 +192,7 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
   }
 
   private void handleRequestLocationPermission(MethodCall call, final Result result) {
-    okHi.requestLocationPermission(null, null, new OkHiRequestHandler<Boolean>() {
+    okHi.requestLocationPermission(new OkHiRequestHandler<Boolean>() {
       @Override
       public void onResult(Boolean permission) {
         result.success(permission);
@@ -205,7 +205,7 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
   }
 
   private void handleRequestBackgroundLocationPermission(MethodCall call, Result result) {
-    okHi.requestBackgroundLocationPermission(null, null, new OkHiRequestHandler<Boolean>() {
+    okHi.requestBackgroundLocationPermission(new OkHiRequestHandler<Boolean>() {
       @Override
       public void onResult(Boolean permission) {
         result.success(permission);
