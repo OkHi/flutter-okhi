@@ -1,3 +1,4 @@
+/// Defines the structure of the foreground notification that will be used during verification.
 class OkHiAndroidNotification {
   String title = "Kiano Verification in progress";
   String text = "Kiano Your address is being verified";

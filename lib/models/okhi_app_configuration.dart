@@ -1,7 +1,7 @@
 import './okhi_notification.dart';
 
 import './okhi_env.dart';
-
+/// Defines the current mode you'll be using OkHi's services, your API Keys, as well as your application's meta information.
 class OkHiAppConfiguration {
   final String branchId;
   final String clientKey;
