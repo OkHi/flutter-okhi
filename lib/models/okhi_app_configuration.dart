@@ -1,6 +1,7 @@
 import './okhi_notification.dart';
 
 import './okhi_env.dart';
+
 /// Defines the current mode you'll be using OkHi's services, your API Keys, as well as your application's meta information.
 class OkHiAppConfiguration {
   final String branchId;
@@ -21,12 +22,11 @@ class OkHiAppConfiguration {
     this.notification = notification ?? OkHiAndroidNotification.withDefaults();
   }
 
-  OkHiAppConfiguration.withRawValue({
-    required this.branchId,
-    required this.clientKey,
-    required this.environmentRawValue,
-    OkHiAndroidNotification? notification
-  }) {
+  OkHiAppConfiguration.withRawValue(
+      {required this.branchId,
+      required this.clientKey,
+      required this.environmentRawValue,
+      OkHiAndroidNotification? notification}) {
     this.notification = notification ?? OkHiAndroidNotification.withDefaults();
   }
 }

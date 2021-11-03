@@ -9,11 +9,11 @@ Use your sandbox keys while you test and develop, and your production mode keys 
 
 ## Android
 ### Change your minSdkVersion target
-This library targets android devices >= SDK 23. Make sure you're targeting at-least the same by modifying your `android/build.gradle` file
+This library targets android devices >= SDK 20. Make sure you're targeting at-least the same by modifying your `android/build.gradle` file
 
 ```gradle
 ext {
-  minSdkVersion = 23
+  minSdkVersion = 20
   ..//
 }
 ```
@@ -37,10 +37,12 @@ If you're targeting Android versions >= 8 and you're using the OkVerify library 
 ## iOS
 ### Enable background mode in your application
 
-OkHi obtains verification signals in the background, to enable this make sure to add "Location updates" and "Background fetch" yo your Background Modes under Signing & Capabilities of your target
+OkHi obtains verification signals in the background, to enable this make sure to add "Location updates" and "Background fetch" to your Background Modes under Signing & Capabilities of your target.
+
+![background modes](https://storage.googleapis.com/okhi-cdn/files/Screenshot%202021-11-02%20at%2008.01.13.png)
 
 ### Add necessary permissions to your `Info.plist`
-```plist
+```xml
 <key>NSLocationWhenInUseUsageDescription</key>
 <string>String that explains why you need when in use location permission</string>
 <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -52,7 +54,7 @@ OkHi obtains verification signals in the background, to enable this make sure to
 Add the dependency in your pubspec.yaml:
 
 ```yaml
-okhi: 1.0.0
+okhi: 1.0.1
 ```
 
 # Usage
@@ -105,7 +107,7 @@ class CreateAddress extends StatelessWidget {
         title: const Text("Create an address"),
       ),
       body: OkHiLocationManager(
-        user: OkHiUser(phone: "+254700110590"),
+        user: OkHiUser(phone: "+254712345678"),
         onSucess: (response) async {
           print(response.user) // user information
           print(response.location) // address information
@@ -120,3 +122,6 @@ class CreateAddress extends StatelessWidget {
   }
 }
 ```
+# Documentation
+- [Guide](https://docs.okhi.co/v/v5.1-beta/okhi-on-your-flutter-app)
+- [Best practices](https://docs.google.com/document/d/1kxolQJ4n6tEgReuqVLYpDVMW--xvqv5UQ7AdvrN0Uw0/edit)

@@ -102,9 +102,11 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
       _accessToken = 'Token ${base64.encode(bytes)}';
       await _signInUser();
       await _getAppInformation();
-      setState(() {
-        _isLoading = false;
-      });
+      if (_authorizationToken != null) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     } else if (widget.onError != null) {
       widget.onError!(
         OkHiException(
@@ -221,39 +223,50 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
       "scopes": ["address"]
     });
     final parsedUrl = Uri.parse(_signInUrl);
-    final response = await http.post(
-      parsedUrl,
-      headers: headers,
-      body: body,
-    );
-    if (response.statusCode == 201) {
-      final body = jsonDecode(response.body);
-      _authorizationToken = body["authorization_token"];
-    } else if (widget.onError != null) {
-      switch (response.statusCode) {
-        case 400:
-          widget.onError!(
-            OkHiException(
-              code: OkHiException.invalidPhoneCode,
-              message: OkHiException.invalidPhoneMessage,
-            ),
-          );
-          break;
-        case 401:
-          widget.onError!(
-            OkHiException(
-              code: OkHiException.unauthorizedCode,
-              message: OkHiException.unauthorizedMessage,
-            ),
-          );
-          break;
-        default:
-          widget.onError!(
-            OkHiException(
-              code: OkHiException.unknownErrorCode,
-              message: OkHiException.uknownErrorMessage,
-            ),
-          );
+    try {
+      final response = await http.post(
+        parsedUrl,
+        headers: headers,
+        body: body,
+      );
+      if (response.statusCode == 201) {
+        final body = jsonDecode(response.body);
+        _authorizationToken = body["authorization_token"];
+      } else if (widget.onError != null) {
+        switch (response.statusCode) {
+          case 400:
+            widget.onError!(
+              OkHiException(
+                code: OkHiException.invalidPhoneCode,
+                message: OkHiException.invalidPhoneMessage,
+              ),
+            );
+            break;
+          case 401:
+            widget.onError!(
+              OkHiException(
+                code: OkHiException.unauthorizedCode,
+                message: OkHiException.unauthorizedMessage,
+              ),
+            );
+            break;
+          default:
+            widget.onError!(
+              OkHiException(
+                code: OkHiException.unknownErrorCode,
+                message: OkHiException.uknownErrorMessage,
+              ),
+            );
+        }
+      }
+    } catch (e) {
+      if (widget.onError != null) {
+        widget.onError!(
+          OkHiException(
+            code: OkHiException.networkError,
+            message: OkHiException.networkErrorMessage,
+          ),
+        );
       }
     }
   }
