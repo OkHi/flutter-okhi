@@ -107,7 +107,7 @@ class CreateAddress extends StatelessWidget {
         title: const Text("Create an address"),
       ),
       body: OkHiLocationManager(
-        user: OkHiUser(phone: "+254700110590"),
+        user: OkHiUser(phone: "+254712345678"),
         onSucess: (response) async {
           print(response.user) // user information
           print(response.location) // address information
