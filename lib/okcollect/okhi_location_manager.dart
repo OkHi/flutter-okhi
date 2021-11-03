@@ -102,9 +102,11 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
       _accessToken = 'Token ${base64.encode(bytes)}';
       await _signInUser();
       await _getAppInformation();
-      setState(() {
-        _isLoading = false;
-      });
+      if (_authorizationToken != null) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     } else if (widget.onError != null) {
       widget.onError!(
         OkHiException(
