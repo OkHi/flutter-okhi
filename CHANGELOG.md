@@ -1,3 +1,7 @@
+## 1.0.4
+
+* Fixed parsing user information from OkHiLocationManagerResponse
+
 ## 1.0.3
 
 * Fixed documentation
