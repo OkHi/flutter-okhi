@@ -1,4 +1,5 @@
 import './okhi_constant.dart';
+
 /// The OkHiLocationManagerConfiguration exposes configurations that you can use to customise it's functionality and appearance.
 class OkHiLocationManagerConfiguration {
   late String color;

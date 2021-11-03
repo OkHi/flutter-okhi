@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 /// Defines the structure of the user object requried by OkHi services and libraries.
 class OkHiUser {
   String? firstName;

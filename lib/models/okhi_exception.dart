@@ -20,6 +20,6 @@ class OkHiException implements Exception {
       'Current platform is not supported';
   static const String badRequestCode = 'bad_request';
   static const String badRequestMessage = 'Invalid parameters provided';
-  
+
   OkHiException({required this.code, required this.message});
 }
