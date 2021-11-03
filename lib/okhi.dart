@@ -87,8 +87,10 @@ class OkHi {
           .invokeMethod(OkHiNativeMethod.requestEnableLocationServices);
       return result;
     } else {
-      // ignore: todo
-      throw Exception('Platform not supported');
+      throw OkHiException(
+        code: OkHiException.unsupportedPlatformCode,
+        message: OkHiException.unsupportedPlatformMessage,
+      );
     }
   }
 
@@ -191,7 +193,8 @@ class OkHi {
         message: "Location services disabled",
       );
     }
-    var hasLocationServices = Platform.isIOS ? true : await OkHi.isLocationServicesEnabled();
+    var hasLocationServices =
+        Platform.isIOS ? true : await OkHi.isLocationServicesEnabled();
     var hasLocationPermission =
         await OkHi.isBackgroundLocationPermissionGranted();
     var hasGooglePlayService =
@@ -201,7 +204,8 @@ class OkHi {
           hasLocationPermission &&
           hasGooglePlayService;
     }
-    hasLocationServices = await OkHi.requestEnableLocationServices();
+    hasLocationServices =
+        Platform.isIOS ? true : await OkHi.requestEnableLocationServices();
     hasLocationPermission = await OkHi.requestBackgroundLocationPermission();
     hasGooglePlayService =
         Platform.isIOS ? true : await OkHi.requestEnableGooglePlayServices();
