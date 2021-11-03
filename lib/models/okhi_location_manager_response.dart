@@ -9,7 +9,7 @@ class OkHiLocationManagerResponse {
 
   OkHiLocationManagerResponse(Map<String, dynamic> data) {
     location = OkHiLocation.fromMap(data["location"]);
-    user = OkHiUser.fromMap(phone: data["user"]["phone"], data: data);
+    user = OkHiUser.fromMap(phone: data["user"]["phone"], data: data["user"]);
   }
 
   @override
