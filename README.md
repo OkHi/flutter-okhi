@@ -122,3 +122,6 @@ class CreateAddress extends StatelessWidget {
   }
 }
 ```
+# Documentation
+- [Guide](https://docs.okhi.co/v/v5.1-beta/okhi-on-your-flutter-app)
+- [Best practices](https://docs.google.com/document/d/1kxolQJ4n6tEgReuqVLYpDVMW--xvqv5UQ7AdvrN0Uw0/edit)
