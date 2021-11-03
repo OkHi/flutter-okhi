@@ -1,3 +1,7 @@
+## 1.0.3
+
+* Fixed documentation
+
 ## 1.0.2
 
 * Fixed issue on location manager failing with bad server response
