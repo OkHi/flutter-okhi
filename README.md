@@ -12,10 +12,7 @@ Use your sandbox keys while you test and develop, and your production mode keys 
 This library targets android devices >= SDK 20. Make sure you're targeting at-least the same by modifying your `android/build.gradle` file
 
 ```gradle
-ext {
-  minSdkVersion = 20
-  ..//
-}
+minSdkVersion = 20
 ```
 ### Add necessary permissions to your `AndroidManifest.xml`
 ```xml
@@ -41,6 +38,18 @@ OkHi obtains verification signals in the background, to enable this make sure to
 
 ![background modes](https://storage.googleapis.com/okhi-cdn/files/Screenshot%202021-11-02%20at%2008.01.13.png)
 
+### Change your deployment target
+
+All OkHi Flutter libraries target ios devices >= 12. Make sure you're targeting at-least the same by modifying your both your Podfile and deployment target in xcode.
+
+![deployemnttarget](https://storage.googleapis.com/okhi-cdn/files/Screenshot%202021-11-02%20at%2018.09.04.png)
+
+Podile located under: `ios/Podfile`
+
+```xml
+platform :ios, '12.0'
+```
+
 ### Add necessary permissions to your `Info.plist`
 ```xml
 <key>NSLocationWhenInUseUsageDescription</key>
@@ -51,10 +60,10 @@ OkHi obtains verification signals in the background, to enable this make sure to
 
 ## Installation
 
-Add the dependency in your pubspec.yaml:
+Run the bellow command in the root directory of your flutter project.
 
 ```yaml
-okhi: 1.0.1
+flutter pub add okhi
 ```
 
 # Usage
