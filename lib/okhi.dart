@@ -57,7 +57,7 @@ class OkHi {
   static Future<bool> isGooglePlayServicesAvailable() async {
     if (Platform.isAndroid) {
       final bool result = await _channel
-          .invokeMethod(OkHiNativeMethod.isBackgroundLocationPermissionGranted);
+          .invokeMethod(OkHiNativeMethod.isGooglePlayServicesAvailable);
       return result;
     } else {
       throw OkHiException(

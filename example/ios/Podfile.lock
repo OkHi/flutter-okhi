@@ -1,11 +1,12 @@
 PODS:
   - Flutter (1.0.0)
-  - OkCore (1.3.7)
+  - OkCore (1.4.0)
   - okhi (0.0.1):
     - Flutter
-    - OkCore (~> 1.3.7)
-    - OkVerify (~> 1.3.5)
-  - OkVerify (1.3.5)
+    - OkCore (~> 1.4.0)
+    - OkVerify (~> 1.4.0)
+  - OkVerify (1.4.0):
+    - OkCore (~> 1.4.0)
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
 
@@ -29,9 +30,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  OkCore: 9bea489a421d27f24f313123c8ba0bb5e3bba6f1
-  okhi: 5a25bf904caadcb1d7dba46c852e7b67c7014cae
-  OkVerify: 01f927ef27b48f7531012077b2dcf41ad5ae518c
+  OkCore: 29913812f9381c614df4f438ae2c0257dbe41243
+  okhi: 432e6be9df0905b9e88761bf8cbb963e93c1ad65
+  OkVerify: 2c7bfa024e82e97fad55216b53aad97ad4a4e77d
   webview_flutter_wkwebview: 44aa025fbcf6730d808f1e0d86a5af5ac25fa8de
 
 PODFILE CHECKSUM: 4e8f8b2be68aeea4c0d5beb6ff1e79fface1d048

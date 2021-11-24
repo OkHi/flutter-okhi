@@ -291,11 +291,11 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
     okVerify.start(user, location, withForegroundService == null || withForegroundService, new OkVerifyCallback<String>() {
       @Override
       public void onSuccess(String verificationResult) {
-        result.success(verificationResult);
+        new OkHiMainThreadResult(result).success(verificationResult);
       }
       @Override
       public void onError(OkHiException e) {
-        result.error(e.getCode(), e.getMessage(), null);
+        new OkHiMainThreadResult(result).error(e.getCode(),  e.getMessage(), null);
       }
     });
   }
@@ -305,15 +305,15 @@ public class OkhiPlugin implements FlutterPlugin, MethodCallHandler, ActivityAwa
       result.error("unauthorized", "invalid initialization credentials provided", null);
       return;
     }
-    String locationId = call.argument("phoneNumber");
+    String locationId = call.argument("locationId");
     OkVerify.stop(context, locationId, new OkVerifyCallback<String>() {
       @Override
       public void onSuccess(String verificationResult) {
-        result.success(verificationResult);
+        new OkHiMainThreadResult(result).success(verificationResult);
       }
       @Override
       public void onError(OkHiException e) {
-        result.error(e.getCode(), e.getMessage(), null);
+        new OkHiMainThreadResult(result).error(e.getCode(),  e.getMessage(), null);
       }
     });
   }

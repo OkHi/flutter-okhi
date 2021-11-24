@@ -6,3 +6,20 @@
 
 build/
 .vscode/settings.json
+android/.idea/vcs.xml
+android/.idea/modules.xml
+.gitignore
+android/.idea/misc.xml
+android/.idea/jarRepositories.xml
+android/.idea/gradle.xml
+android/.idea/compiler.xml
+android/.idea/.name
+android/.classpath
+android/.project
+android/.settings/org.eclipse.buildship.core.prefs
+example/android/.project
+example/android/.settings/org.eclipse.buildship.core.prefs
+example/android/app/.classpath
+example/android/app/.project
+.gitignore
+example/android/app/.settings/org.eclipse.buildship.core.prefs

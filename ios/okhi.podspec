@@ -20,6 +20,6 @@ A new flutter plugin project.
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
-  s.dependency 'OkCore', '~> 1.3.7'
-  s.dependency 'OkVerify', '~> 1.3.5'
+  s.dependency 'OkCore', '~> 1.4.0'
+  s.dependency 'OkVerify', '~> 1.4.0'
 end
