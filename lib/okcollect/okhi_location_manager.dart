@@ -224,11 +224,13 @@ class _OkHiLocationManagerState extends State<OkHiLocationManager> {
     });
     final parsedUrl = Uri.parse(_signInUrl);
     try {
-      final response = await http.post(
-        parsedUrl,
-        headers: headers,
-        body: body,
-      );
+      final response = await http
+          .post(
+            parsedUrl,
+            headers: headers,
+            body: body,
+          )
+          .timeout(const Duration(seconds: 10));
       if (response.statusCode == 201) {
         final body = jsonDecode(response.body);
         _authorizationToken = body["authorization_token"];
