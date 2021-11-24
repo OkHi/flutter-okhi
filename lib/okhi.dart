@@ -75,6 +75,12 @@ class OkHi {
 
   /// Requests for background location permission.
   static Future<bool> requestBackgroundLocationPermission() async {
+    if (Platform.isAndroid) {
+      final bool whenInUsePermission = await requestLocationPermission();
+      if (!whenInUsePermission) {
+        return false;
+      }
+    }
     final bool result = await _channel
         .invokeMethod(OkHiNativeMethod.requestBackgroundLocationPermission);
     return result;
