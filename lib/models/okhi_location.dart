@@ -52,7 +52,7 @@ class OkHiLocation {
     id = data.containsKey("id") ? data["id"] : null;
     lat = data.containsKey("geo_point") ? data["geo_point"]["lat"] : null;
     lon = data.containsKey("geo_point") ? data["geo_point"]["lon"] : null;
-    city = data.containsKey("city") ? data["geo_point"]["lon"] : null;
+    city = data.containsKey("city") ? data["city"] : null;
     country = data.containsKey("country") ? data["country"] : null;
     directions = data.containsKey("directions") ? data["directions"] : null;
     displayTitle =
