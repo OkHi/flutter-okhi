@@ -20,6 +20,10 @@ class CreateAddress extends StatelessWidget {
                 onSucess: (response) {
                   _handleLocationManagerResponse(context, response);
                 },
+                onError: (error) {
+                  print(error.code);
+                  print(error.message);
+                },
               ),
             ),
             Padding(
