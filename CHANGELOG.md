@@ -1,3 +1,8 @@
+## 1.0.5
+
+* Fixed parsing location information from OkHiLocationManagerResponse
+* Fixed @UIThread errors on starting and stopping verification
+
 ## 1.0.4
 
 * Fixed parsing user information from OkHiLocationManagerResponse
