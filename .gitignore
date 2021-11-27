@@ -23,3 +23,6 @@ example/android/app/.classpath
 example/android/app/.project
 .gitignore
 example/android/app/.settings/org.eclipse.buildship.core.prefs
+.idea/**/*.xml
+.idea/sonarlint
+!.idea/libraries/Dart_SDK.xml
